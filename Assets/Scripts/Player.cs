@@ -3,16 +3,19 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    // [SerializeField] private ObstacleHandler obstacleHandler;
-    
     [SerializeField] private Rigidbody body;
     [SerializeField] private float speed;
+    [SerializeField] private float jumpForce = 8f;
+    // [SerializeField] private float fallMultiplier = 3f;
+
+    private Transform tr;
 
     public event Action ObstaclePassed;
     
     private void Awake()
     {
-        // obstacleHandler.ObstaclePassed += OnObstaclePassed;
+        tr = transform;
+        InputButton.InputUsed += OnInput;
     }
 
     private void Start()
@@ -22,17 +25,47 @@ public class Player : MonoBehaviour
 
     private void OnDestroy()
     {
-        // obstacleHandler.ObstaclePassed -= OnObstaclePassed;
+        InputButton.InputUsed -= OnInput;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        // body.MovePosition();
-    }
 
+    }
+    
+    private void FixedUpdate()
+    { 
+        body.MovePosition(tr.position + tr.forward * (speed * Time.deltaTime));
+
+        // if(body.velocity.y < 0)
+        //     body.velocity += Vector3.up * (Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime);
+    }
+    
     private void OnCollisionEnter2D(Collision2D other)
     {
         
+    }
+    
+    private void OnInput(InputButton inputButton)
+    {
+        switch (inputButton.InputType)
+        {
+            case InputType.Jump:
+                body.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                break;
+            
+            case InputType.Grow:
+                break;
+            
+            case InputType.Shrink:
+                break;
+            
+            case InputType.Shoot:
+                break;
+            
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
     
     private void OnObstaclePassed()
