@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private ObstacleHandler obstacleHandler;
+    // [SerializeField] private ObstacleHandler obstacleHandler;
     
     [SerializeField] private Rigidbody body;
     [SerializeField] private float speed;
@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     
     private void Awake()
     {
-        obstacleHandler.ObstaclePassed += OnObstaclePassed;
+        // obstacleHandler.ObstaclePassed += OnObstaclePassed;
     }
 
     private void Start()
@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
 
     private void OnDestroy()
     {
-        obstacleHandler.ObstaclePassed -= OnObstaclePassed;
+        // obstacleHandler.ObstaclePassed -= OnObstaclePassed;
     }
 
     private void FixedUpdate()

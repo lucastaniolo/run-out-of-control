@@ -212,3 +212,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71cbb920455b5de4cb0559ef990be149, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputButtonPrefab: {fileID: 8415264355392901097, guid: 4fabf0855e1902745ad7a075e111c4a4,
+    type: 3}
+  container: {fileID: 4083511014061625772}
+  maxButtons: 9

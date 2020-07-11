@@ -33,6 +33,7 @@ public class InputButton : MonoBehaviour
     private void OnClick()
     {
         InputUsed?.Invoke(this);
+        Destroy(gameObject);
     }
 
     private void UpdateView()
