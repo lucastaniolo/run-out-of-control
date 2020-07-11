@@ -6,9 +6,13 @@ public class Player : MonoBehaviour
     [SerializeField] private Rigidbody body;
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce = 8f;
+    [SerializeField] private float airJumpForce = 4f;
+
     // [SerializeField] private float fallMultiplier = 3f;
 
     private Transform tr;
+
+    private float JumpForce => body.velocity.y > 0 ? airJumpForce : jumpForce;
 
     public event Action ObstaclePassed;
     
@@ -51,7 +55,7 @@ public class Player : MonoBehaviour
         switch (inputButton.InputType)
         {
             case InputType.Jump:
-                body.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                body.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
                 break;
             
             case InputType.Grow:
