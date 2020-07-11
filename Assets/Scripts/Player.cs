@@ -20,12 +20,16 @@ public class Player : MonoBehaviour
     private Transform tr;
     
     private static readonly int JumpHash = Animator.StringToHash("Jump");
-    private static readonly int GrowHash = Animator.StringToHash("Grow");
-    private static readonly int ShrinkHash = Animator.StringToHash("Shrink");
+    private static readonly int IsBigHash = Animator.StringToHash("IsBig");
+    private static readonly int DieHash = Animator.StringToHash("Die");
 
     private float JumpForce => IsBig ? growJumpForce : shrinkJumpForce;
 
     public event Action ObstaclePassed;
+
+    public static event Action Died;
+
+    private bool isDead;
     
     private void Awake()
     {
@@ -39,7 +43,9 @@ public class Player : MonoBehaviour
     }
 
     private void FixedUpdate()
-    { 
+    {
+        if (isDead) return;
+        
         body.MovePosition(tr.position + tr.right * (speed * Time.deltaTime));
 
         foreach (var r in frontRays)
@@ -49,13 +55,19 @@ public class Player : MonoBehaviour
                 // Debug.LogWarning($"[Taniolo] distance {hit.distance}");
 
                 if (hit.distance < 0.1f)
-                    Destroy(gameObject);
+                {
+                    isDead = true;
+                    Died?.Invoke();
+                    animator.SetTrigger(DieHash);
+                }
             }
         }
     }
 
     private void OnInput(InputButton inputButton)
     {
+        if (isDead) return;
+        
         switch (inputButton.InputType)
         {
             case InputType.Jump:
@@ -63,14 +75,14 @@ public class Player : MonoBehaviour
                 break;
             
             case InputType.Grow:
-                animator.SetTrigger(GrowHash);
                 IsBig = true;
+                animator.SetBool(IsBigHash, IsBig);
                 boxCollider.size = Vector3.one;
                 break;
             
             case InputType.Shrink:
-                animator.SetTrigger(ShrinkHash);
                 IsBig = false;
+                animator.SetBool(IsBigHash, IsBig);
                 boxCollider.size = Vector3.one * 0.5f;
                 break;
             
