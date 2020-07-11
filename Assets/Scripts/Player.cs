@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -8,11 +9,16 @@ public class Player : MonoBehaviour
     [SerializeField] private float jumpForce = 8f;
     [SerializeField] private Animator animator;
 
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask obstacleLayer;
+    
+    [SerializeField] private Transform[] frontRays;
+    
     private Transform tr;
     
-    private static readonly int Jump = Animator.StringToHash("Jump");
-    private static readonly int Grow = Animator.StringToHash("Grow");
-    private static readonly int Shrink = Animator.StringToHash("Shrink");
+    private static readonly int JumpHash = Animator.StringToHash("Jump");
+    private static readonly int GrowHash = Animator.StringToHash("Grow");
+    private static readonly int ShrinkHash = Animator.StringToHash("Shrink");
 
     private float JumpForce => jumpForce;
 
@@ -43,6 +49,21 @@ public class Player : MonoBehaviour
     { 
         body.MovePosition(tr.position + tr.right * (speed * Time.deltaTime));
 
+        foreach (var r in frontRays)
+        {
+            if (Physics.Raycast(r.position, r.TransformDirection(Vector3.right), out var hit, Mathf.Infinity, obstacleLayer))
+            {
+                Debug.LogWarning($"[Taniolo] distance {hit.distance}");
+
+                if (hit.distance < 0.1f)
+                {
+                    Debug.LogWarning($"[Taniolo] DIE");
+                    Destroy(gameObject);
+                }
+            }
+        }
+
+        
         // if(body.velocity.y < 0)
         //     body.velocity += Vector3.up * (Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime);
     }
@@ -57,18 +78,15 @@ public class Player : MonoBehaviour
         switch (inputButton.InputType)
         {
             case InputType.Jump:
-                animator.SetTrigger(Jump);
-                var currentVelocity = body.velocity;
-                body.velocity = new Vector3(currentVelocity.x, 0, currentVelocity.z);
-                body.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
+                Jump();
                 break;
             
             case InputType.Grow:
-                animator.SetTrigger(Grow);
+                animator.SetTrigger(GrowHash);
                 break;
             
             case InputType.Shrink:
-                animator.SetTrigger(Shrink);
+                animator.SetTrigger(ShrinkHash);
                 break;
             
             case InputType.Shoot:
@@ -78,9 +96,22 @@ public class Player : MonoBehaviour
                 throw new ArgumentOutOfRangeException();
         }
     }
-    
-    private void OnObstaclePassed()
+
+    private void Jump()
     {
-        
+        if (Physics.Raycast(tr.position, tr.TransformDirection(Vector3.down), out var hit, Mathf.Infinity))
+        {
+            Debug.LogWarning($"[Taniolo] distance {hit.distance}");
+                    
+            if (hit.distance > 0.65f)
+                return;
+        }
+                
+        animator.SetTrigger(JumpHash);
+        var currentVelocity = body.velocity;
+        body.velocity = new Vector3(currentVelocity.x, 0, currentVelocity.z);
+        body.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
     }
+    
+
 }

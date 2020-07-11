@@ -12,11 +12,13 @@ public class InputPanelManager : MonoBehaviour
     private void Awake()
     {
         InputButton.InputUsed += RemoveButton;
+        InputPickUp.InputPickUpEvent += PickUp;
     }
 
     private void OnDestroy()
     {
         InputButton.InputUsed -= RemoveButton;
+        InputPickUp.InputPickUpEvent -= PickUp;
     }
 
     // CHEATS
@@ -47,5 +49,10 @@ public class InputPanelManager : MonoBehaviour
     {
         buttons.Remove(inputButton);
         Destroy(inputButton.gameObject);
+    }
+    
+    private void PickUp(InputPickUp inputPickUp)
+    {
+        AddButton(inputPickUp.InputType);
     }
 }

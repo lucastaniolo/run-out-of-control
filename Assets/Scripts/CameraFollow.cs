@@ -19,6 +19,8 @@ public class CameraFollow : MonoBehaviour
 
     private void Update()
     {
+        if (!target) return;
+        
         var targetPosition = new Vector3(target.position.x - offset.x, tr.position.y, tr.position.z);
         tr.position = targetPosition;
     }
