@@ -1,18 +1,21 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private Rigidbody body;
     [SerializeField] private float speed;
-    [SerializeField] private float jumpForce = 8f;
+    [SerializeField] private float growJumpForce = 15f;
+    [SerializeField] private float shrinkJumpForce = 5f;
     [SerializeField] private Animator animator;
+    [SerializeField] private BoxCollider boxCollider;
 
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask obstacleLayer;
     
     [SerializeField] private Transform[] frontRays;
+
+    public bool IsBig { get; set; } = true;
     
     private Transform tr;
     
@@ -20,7 +23,7 @@ public class Player : MonoBehaviour
     private static readonly int GrowHash = Animator.StringToHash("Grow");
     private static readonly int ShrinkHash = Animator.StringToHash("Shrink");
 
-    private float JumpForce => jumpForce;
+    private float JumpForce => IsBig ? growJumpForce : shrinkJumpForce;
 
     public event Action ObstaclePassed;
     
@@ -29,22 +32,12 @@ public class Player : MonoBehaviour
         tr = transform;
         InputButton.InputUsed += OnInput;
     }
-
-    private void Start()
-    {
-        
-    }
-
+    
     private void OnDestroy()
     {
         InputButton.InputUsed -= OnInput;
     }
 
-    private void Update()
-    {
-
-    }
-    
     private void FixedUpdate()
     { 
         body.MovePosition(tr.position + tr.right * (speed * Time.deltaTime));
@@ -53,26 +46,14 @@ public class Player : MonoBehaviour
         {
             if (Physics.Raycast(r.position, r.TransformDirection(Vector3.right), out var hit, Mathf.Infinity, obstacleLayer))
             {
-                Debug.LogWarning($"[Taniolo] distance {hit.distance}");
+                // Debug.LogWarning($"[Taniolo] distance {hit.distance}");
 
                 if (hit.distance < 0.1f)
-                {
-                    Debug.LogWarning($"[Taniolo] DIE");
                     Destroy(gameObject);
-                }
             }
         }
+    }
 
-        
-        // if(body.velocity.y < 0)
-        //     body.velocity += Vector3.up * (Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime);
-    }
-    
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        
-    }
-    
     private void OnInput(InputButton inputButton)
     {
         switch (inputButton.InputType)
@@ -83,13 +64,18 @@ public class Player : MonoBehaviour
             
             case InputType.Grow:
                 animator.SetTrigger(GrowHash);
+                IsBig = true;
+                boxCollider.size = Vector3.one;
                 break;
             
             case InputType.Shrink:
                 animator.SetTrigger(ShrinkHash);
+                IsBig = false;
+                boxCollider.size = Vector3.one * 0.5f;
                 break;
             
             case InputType.Shoot:
+                Shoot();
                 break;
             
             default:
@@ -112,6 +98,15 @@ public class Player : MonoBehaviour
         body.velocity = new Vector3(currentVelocity.x, 0, currentVelocity.z);
         body.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
     }
-    
 
+    private void Shoot()
+    {
+        if (Physics.Raycast(tr.position, tr.TransformDirection(Vector3.right), out var hit, Mathf.Infinity, obstacleLayer))
+        {
+            Debug.LogWarning($"[Taniolo] SHOOT {hit.transform.name}");
+
+            if (hit.transform.TryGetComponent<Box>(out var box))
+                box.Explode();
+        }
+    }
 }

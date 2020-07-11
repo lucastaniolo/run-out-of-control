@@ -48,8 +48,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 2617594427463440143}
   speed: 3
-  jumpForce: 8
+  growJumpForce: 20
+  shrinkJumpForce: 12
   animator: {fileID: 3944554275978601464}
+  boxCollider: {fileID: 2617594427463440142}
   groundLayer:
     serializedVersion: 2
     m_Bits: 768
