@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform[] smallFrontRays;
 
     [SerializeField] private GameObject finalHud;
+    [SerializeField] private GameObject restartHud;
 
     public bool IsBig { get; set; } = true;
     public bool IsGrounded { get; set; }
@@ -108,7 +109,7 @@ public class Player : MonoBehaviour
     }
 
     private bool jumpCooldown;
-    
+
     private void Jump()
     {
         if (!CanJump && jumpCooldown) return;
@@ -141,6 +142,12 @@ public class Player : MonoBehaviour
             animator.SetTrigger(WinHash);
             isDead = true;
             finalHud.SetActive(true);
+        }
+        else if (other.CompareTag("Kill"))
+        {
+            animator.SetTrigger(DieHash);
+            isDead = true;
+            restartHud.SetActive(true);
         }
     }
 }

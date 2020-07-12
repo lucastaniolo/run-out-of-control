@@ -6,6 +6,7 @@ TagManager:
   tags:
   - InputPickUp
   - FinishLine
+  - Kill
   layers:
   - Default
   - TransparentFX
