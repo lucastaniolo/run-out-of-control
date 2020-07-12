@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform[] bigFrontRays;
     [SerializeField] private Transform[] smallFrontRays;
 
+    [SerializeField] private GameObject finalHud;
+
     public bool IsBig { get; set; } = true;
     public bool IsGrounded { get; set; }
 
@@ -28,6 +30,7 @@ public class Player : MonoBehaviour
     private static readonly int JumpHash = Animator.StringToHash("Jump");
     private static readonly int IsBigHash = Animator.StringToHash("IsBig");
     private static readonly int DieHash = Animator.StringToHash("Die");
+    private static readonly int WinHash = Animator.StringToHash("Win");
 
     private float JumpForce => IsBig ? growJumpForce : shrinkJumpForce;
 
@@ -128,6 +131,16 @@ public class Player : MonoBehaviour
 
             if (hit.transform.TryGetComponent<Box>(out var box))
                 box.Explode();
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("FinishLine"))
+        {
+            animator.SetTrigger(WinHash);
+            isDead = true;
+            finalHud.SetActive(true);
         }
     }
 }
