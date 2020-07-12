@@ -252,8 +252,9 @@ MonoBehaviour:
   - {fileID: 4099941817912034027}
   - {fileID: 5302293753461220880}
   deathParticle: {fileID: 73739150}
-  shootEffect: {fileID: 1899724461870960, guid: 5d63a139aa8e1f54282b5c38e5844056,
+  shootEffect: {fileID: 1836633804313756982, guid: 1a148c825202d0843884b975ed8e5db5,
     type: 3}
+  laserPoint: {fileID: 8114372810296121121}
 --- !u!54 &2617594427463440143
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -19,6 +19,8 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject deathParticle;
     [SerializeField] private GameObject shootEffect;
 
+    [SerializeField] private Transform laserPoint;
+
     public bool IsBig { get; set; } = true;
     public bool IsGrounded { get; set; }
 
