@@ -129,8 +129,6 @@ public class Player : MonoBehaviour
     {
         if (Physics.Raycast(tr.position, tr.TransformDirection(Vector3.right), out var hit, Mathf.Infinity, obstacleLayer))
         {
-            Debug.LogWarning($"[Taniolo] SHOOT {hit.transform.name}");
-
             Instantiate(shootEffect, transform.position + Vector3.right * 0.5f, Quaternion.identity);
             
             if (hit.transform.TryGetComponent<Box>(out var box))
