@@ -72,6 +72,7 @@ public class Player : MonoBehaviour
                 break;
             
             case InputType.Grow:
+                tr.position += new Vector3(0f, 0.25f, 0f);
                 IsBig = true;
                 animator.SetBool(IsBigHash, IsBig);
                 boxCollider.size = Vector3.one;
