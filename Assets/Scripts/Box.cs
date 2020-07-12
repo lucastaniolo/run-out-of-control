@@ -2,9 +2,11 @@
 
 public class Box : MonoBehaviour
 {
+    [SerializeField] private GameObject explosion;
+    
     public void Explode()
     {
-        Debug.LogWarning($"[Taniolo] Box exploded");
         Destroy(gameObject);
+        Instantiate(explosion, transform.position, Quaternion.identity);
     }
 }
