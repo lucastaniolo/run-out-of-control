@@ -16,8 +16,8 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform[] bigFrontRays;
     [SerializeField] private Transform[] smallFrontRays;
 
-    [SerializeField] private GameObject finalHud;
-    [SerializeField] private GameObject restartHud;
+    [SerializeField] private GameObject deathParticle;
+    [SerializeField] private GameObject shootEffect;
 
     public bool IsBig { get; set; } = true;
     public bool IsGrounded { get; set; }
@@ -131,6 +131,8 @@ public class Player : MonoBehaviour
         {
             Debug.LogWarning($"[Taniolo] SHOOT {hit.transform.name}");
 
+            Instantiate(shootEffect, transform.position + Vector3.right * 0.5f, Quaternion.identity);
+            
             if (hit.transform.TryGetComponent<Box>(out var box))
                 box.Explode();
         }
@@ -146,6 +148,7 @@ public class Player : MonoBehaviour
         }
         else if (other.CompareTag("Kill"))
         {
+            deathParticle.SetActive(true);
             animator.SetTrigger(DieHash);
             isDead = true;
             Died?.Invoke();
