@@ -13,7 +13,8 @@ public class Player : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask obstacleLayer;
     
-    [SerializeField] private Transform[] frontRays;
+    [SerializeField] private Transform[] bigFrontRays;
+    [SerializeField] private Transform[] smallFrontRays;
 
     public bool IsBig { get; set; } = true;
     
@@ -48,20 +49,16 @@ public class Player : MonoBehaviour
         
         body.MovePosition(tr.position + tr.right * (speed * Time.deltaTime));
 
-        foreach (var r in frontRays)
-        {
-            if (Physics.Raycast(r.position, r.TransformDirection(Vector3.right), out var hit, Mathf.Infinity, obstacleLayer))
+        var rays = IsBig ? bigFrontRays : smallFrontRays;
+        
+        foreach (var r in rays)
+            if (Physics.Raycast(r.position, r.TransformDirection(Vector3.right), out var hit, Mathf.Infinity,
+                obstacleLayer) && hit.distance < 0.1f)
             {
-                // Debug.LogWarning($"[Taniolo] distance {hit.distance}");
-
-                if (hit.distance < 0.1f)
-                {
-                    isDead = true;
-                    Died?.Invoke();
-                    animator.SetTrigger(DieHash);
-                }
+                isDead = true;
+                Died?.Invoke();
+                animator.SetTrigger(DieHash);
             }
-        }
     }
 
     private void OnInput(InputButton inputButton)
