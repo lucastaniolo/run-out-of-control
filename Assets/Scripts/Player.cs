@@ -17,7 +17,12 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform[] smallFrontRays;
 
     public bool IsBig { get; set; } = true;
-    
+    public bool IsGrounded { get; set; }
+
+    private float lastGroundedTime;
+
+    public bool CanJump => IsGrounded || Time.time - lastGroundedTime < 0.15f;
+
     private Transform tr;
     
     private static readonly int JumpHash = Animator.StringToHash("Jump");
@@ -25,8 +30,6 @@ public class Player : MonoBehaviour
     private static readonly int DieHash = Animator.StringToHash("Die");
 
     private float JumpForce => IsBig ? growJumpForce : shrinkJumpForce;
-
-    public event Action ObstaclePassed;
 
     public static event Action Died;
 
@@ -46,6 +49,14 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         if (isDead) return;
+
+        if (Physics.Raycast(tr.position, tr.TransformDirection(Vector3.down), out var hitGround, Mathf.Infinity))
+        {
+            IsGrounded = hitGround.distance < 0.65f;
+
+            if (IsGrounded)
+                lastGroundedTime = Time.time;
+        }
         
         body.MovePosition(tr.position + tr.right * (speed * Time.deltaTime));
 
@@ -93,21 +104,21 @@ public class Player : MonoBehaviour
         }
     }
 
+    private bool jumpCooldown;
+    
     private void Jump()
     {
-        if (Physics.Raycast(tr.position, tr.TransformDirection(Vector3.down), out var hit, Mathf.Infinity))
-        {
-            Debug.LogWarning($"[Taniolo] distance {hit.distance}");
-                    
-            if (hit.distance > 0.65f)
-                return;
-        }
-                
-        animator.SetTrigger(JumpHash);
+        if (!CanJump && jumpCooldown) return;
+
+        jumpCooldown = true;
+        // animator.SetTrigger(JumpHash);
         var currentVelocity = body.velocity;
         body.velocity = new Vector3(currentVelocity.x, 0, currentVelocity.z);
         body.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
+        Invoke(nameof(ReleaseJumpCooldown), 0.5f);
     }
+
+    private void ReleaseJumpCooldown() => jumpCooldown = false;
 
     private void Shoot()
     {

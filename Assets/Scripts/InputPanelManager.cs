@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InputPanelManager : MonoBehaviour
 {
@@ -32,6 +33,9 @@ public class InputPanelManager : MonoBehaviour
             AddButton(InputType.Shrink);
         if (Input.GetKeyDown(KeyCode.R))
             AddButton(InputType.Shoot);
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void AddButton(InputType inputType)
