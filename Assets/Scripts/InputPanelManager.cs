@@ -25,14 +25,14 @@ public class InputPanelManager : MonoBehaviour
     // CHEATS
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-            AddButton(InputType.Jump);
-        if (Input.GetKeyDown(KeyCode.W))
-            AddButton(InputType.Grow);
-        if (Input.GetKeyDown(KeyCode.E))
-            AddButton(InputType.Shrink);
-        if (Input.GetKeyDown(KeyCode.R))
-            AddButton(InputType.Shoot);
+        // if (Input.GetKeyDown(KeyCode.Q))
+        //     AddButton(InputType.Jump);
+        // if (Input.GetKeyDown(KeyCode.W))
+        //     AddButton(InputType.Grow);
+        // if (Input.GetKeyDown(KeyCode.E))
+        //     AddButton(InputType.Shrink);
+        // if (Input.GetKeyDown(KeyCode.R))
+        //     AddButton(InputType.Shoot);
 
         if (Input.GetKeyDown(KeyCode.Escape))
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
