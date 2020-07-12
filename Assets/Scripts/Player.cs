@@ -36,6 +36,7 @@ public class Player : MonoBehaviour
     private float JumpForce => IsBig ? growJumpForce : shrinkJumpForce;
 
     public static event Action Died;
+    public static event Action Win;
 
     private bool isDead;
     
@@ -141,13 +142,13 @@ public class Player : MonoBehaviour
         {
             animator.SetTrigger(WinHash);
             isDead = true;
-            finalHud.SetActive(true);
+            Win?.Invoke();
         }
         else if (other.CompareTag("Kill"))
         {
             animator.SetTrigger(DieHash);
             isDead = true;
-            restartHud.SetActive(true);
+            Died?.Invoke();
         }
     }
 }
